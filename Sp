@@ -1,0 +1,66 @@
+Le portail MCL a été saturé par un bot avec un pic anormal de 16 000 requêtes par jour au lieu de 400. Le trafic malveillant a contourné 
+partiellement le WAF et a touché les backends, provoquant des erreurs, des 504 et une indisponibilité du service Leasing Véhicule.
+L’incident était résolu par la réinitialisation des serveurs.
+2 Les observations AppDynamics montrent deux éléments clés.
+Le premier schéma illustre l’activité backend du portail MCL : environ 16 000 appels, avec une hausse nette des flux d’erreur, des 
+ralentissements et des requêtes bloquées, ainsi qu’un temps de réponse moyen fortement dégradé.
+Le second schéma met en évidence un pic d’erreurs le 3 novembre, avec environ 1 400 erreurs enregistrées sur la journée.
+3 Les schémas AppDynamics du backend MCL montrent deux points importants pour les journées du 7 et 8 novembre.
+Le premier met en évidence un volume d’environ 8 000 appels API, avec une part notable de requêtes lentes et d’erreurs, ainsi qu’un temps 
+moyen de réponse dégradé.
+Le second schéma se concentre sur les phases slow et stall, confirmant des blocages ponctuels et une performance globalement instable 
+sur ces deux journées.
+Slow signifie requêtes lentes :, Stall signifie requêtes bloquées
+4 Les observations du backend MCL montrent, dans AppDynamics, un fort volume d’appels avec un nombre important de requêtes lentes, très 
+lentes et bloquées (stall), soit environ 800 appels, dont près de 650 en erreur sur la journée du 7 novembre.
+Côté THEIA (vue ELK), on observe une concentration massive d’erreurs 504 à partir de 13h30, presque exclusivement des 504 tout l’aprèsmidi.
+5 L’architecture concernée s’appuie sur trois canaux : le front AWS, la gateway anonyme et la gateway authentifiée. 
+Les trois passent ensuite par les gateways MyCloud, qui appellent le backend MCL. Celui-ci dialogue avec Spider via la gateway LAN et avec 
+Athlon pour le moteur de calcul (simulation de loyer). Spider, de son côté, pousse les données vers Oscar/Salesforce (push lead).
+Le site web est hébergé sur un bucket S3 et diffusé via CloudFront, qui sert surtout de cache et n’assure aucune fonction de sécurité.
+Le scénario observé montre un bot envoyant un volume massif de requêtes vers MCL via CloudFront. Une partie du trafic malveillant visait 
+directement la gateway anonyme, contournant le WAF.
+La gateway authentifiée n’a pas été touchée, car cela impliquerait un vol de token ou de credentials, ce qui n’est pas le cas ici. 
+Le front WordPress, qui redirige vers l’appli front MCL, reste pour l’instant peu affecté.
+6 Sur ce schéma, j’ai mis en rouge le flux impacté : l’accès via le site public, passant par la gateway anonyme, jusqu’au backend MCL, puis vers 
+Spider, Oscar et Athlon.
+Le canal anonyme qui accède directement au backend MCL, sans passer par le front AWS.
+AWS WAF offre aujourd’hui une protection basique avec des listes blanches/noires ip, tandis qu’AWS Shield protège contre les attaques DDoS 
+et les accès anormaux. Radware peut constituer une couche supplémentaire de défense.
+Des pics de trafic massifs ont été observés (jusqu’à 16k visites en un jour, contre 400 visites normales), ce qui a entraîné une dégradation des 
+KPI, la pollution des leads dans Oscar, et une surcharge des API, avec un impact potentiel sur Athlon.
+7 L’attaque par requêtes massives provoque une surcharge des API et de la gateway anonyme, fausse les indicateurs marketing et peut 
+impacter les services métiers comme la tarification, le catalogue et la création de leads, et potentiellement la surconsommation
+d’infrastructure.
+8 La solution SaaS Radware, déjà utilisée pour protéger plus de 15 sites internes, peut être positionnée entre AWS CloudFront et AWS ALB pour 
+renforcer la protection. Elle offre des fonctions avancées : détection comportementale, filtrage volumétrique, scoring client, déchiffrement
+SSL, anti-bot, anti-DDoS et WAF.
+Cependant, elle nécessite un cookie pour l’analyse comportementale (enjeu RGPD), est coûteuse et doit être testée en environnement hors 
+production. Selon les notes internes, Radware bloque plus de 500 requêtes par seconde, mais nos attaques sont plus faibles et nécessitent 
+donc un ajustement spécifique.
+La limite majeure reste que les attaques directes vers la gateway anonyme, contournant CloudFront, échappent à toutes les protections 
+positionnées entre CloudFront et ALB.
+9 Actuellement, les mesures en place sont limitées : le blocage manuel des IP est trop lent, le rate limiting global peut impacter les utilisateurs 
+légitimes, et hCaptcha ne sera déployé qu’en fin d’année.
+Une étude est en cours pour mettre en place un bot management dédié, capable d’identifier précisément les bots malveillants, de 
+différencier humain et bot côté navigateur, et d’adapter le filtrage en temps réel (exemples : Radware, Akamai, Cloudflare). 
+10 Pour renforcer la résilience face aux attaques par requêtes massives, il est nécessaire de mettre en place un blocage automatique des 
+adresses IP via WAF ou Radware, avec un paramétrage fin : seuil de requêtes, erreurs HTTP, durée de bannissement, et distinction entre bots 
+légitimes et malveillants. Le choix de Radware dépendra du coût, des enjeux RGPD et de sa capacité à gérer des attaques persistantes de 
+faible intensité.
+Pour les APIs anonymes RIA, le flux client credentials sert uniquement à identifier l’application appelante. ROA MCL respecte pleinement le
+pattern BAPI en mode API anonyme, sans écart par rapport aux préconisations.
+L’accès direct à la gateway anonyme reste le point faible : il faudra renforcer les protections réseau et applicatives (throttling, filtrage, rate 
+limiting sur endpoints critiques comme tarification, fiche produit et simulation).
+Le backend MCL hébergé sur JBoss est sensible à la surcharge ; le passage à OpenShift permettra d’absorber plus facilement les pics, mais
+ne remplace pas la protection en amont. Les dépendances entre ROA, Spider, Oscar et Athlon créent un risque domino, d’où l’importance 
+de protéger tous les flux critiques.
+Des solutions comme captcha ou alternatives, combinées à une surveillance et monitoring renforcés, permettront de détecter et bloquer 
+les requêtes malveillantes avant impact applicatif. L’objectif est d’alerter en temps réel sur les pics anormaux, améliorer la traçabilité et la 
+résilience globale des services.
+11 Sur ce schéma, les flux sécurisés sont en vert, avec des protections appliquées à chaque étape. Le front-end utilise un challenge hCaptcha et 
+la gateway applique un contrôle précis pour chaque API, complété par le WAF et le rate limiting.
+Le pattern appliqué pour détecter les attaques est simple mais efficace : requête bloquée par le WAF + erreur HTTP côté backend. 
+Les flux vers Spider et Athlon bénéficient d’une résilience en chaîne, et les outils d’observabilité pour une visibilité opérationnelle et le suivi en 
+temps réel de l’impact sur les utilisateurs légitimes.
+L’approche globale reste : détecter → filtrer → protéger → surveille
