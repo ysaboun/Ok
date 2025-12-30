@@ -1,0 +1,105 @@
+Maîtrise des données
+
+La donnée est un actif stratégique.
+
+Une donnée de référence a un propriétaire unique (single source of truth).
+
+Séparation des applications et des référentiels de données.
+
+Qualité, traçabilité, sécurité et conformité réglementaire des données.
+
+
+Principe de réutilisation
+
+
+Interopérabilité et standards
+
+
+
+Évolutivité et pérennité
+
+Le SI doit être adaptable dans le temps.
+
+Capacité à intégrer de nouveaux usages et technologies.
+
+Anticipation des évolutions réglementaires et métiers.
+
+Limitation de l’obsolescence applicative et technique.
+
+
+Sécurité et conformité by design
+
+La sécurité est intégrée dès la conception.
+
+Confidentialité, intégrité, disponibilité des systèmes.
+
+Conformité aux exigences réglementaires (RGPD, normes internes).
+
+Gestion des accès, traçabilité et résilience.
+
+
+
+Gouvernance et maîtrise des coûts
+
+L’urbanisation s’inscrit dans une gouvernance claire.
+
+Arbitrage entre projets, dette technique et maintien en condition.
+
+Pilotage des coûts globaux (TCO).
+
+Décisions d’architecture documentées et partagées.
+
+
+Réglementaire / Compliance
+communication interne.
+
+architecture, performances, sécurité, intégration,
+
+
+Résilience
+
+Capacité à encaisser des incidents, pannes, ou variations de charge.
+
+Continuité de service et tolérance aux erreurs.
+
+Performance / Efficacité
+
+Temps de réponse, débit, scalabilité.
+
+Optimisation des ressources et rapidité des processus.
+
+Sécurité / Conformité
+
+Protection des données, contrôle d’accès, conformité réglementaire.
+
+Vulnérabilités ou écarts par rapport aux standards.
+
+Qualité / Fiabilité
+
+Taux d’erreurs, stabilité, robustesse.
+
+Cohérence des résultats et des livrables.
+
+Agilité / Flexibilité
+
+Capacité à évoluer rapidement, à intégrer des changements.
+
+Adaptabilité aux nouvelles exigences ou technologies.
+
+Innovation / Potentiel d’amélioration
+
+Zones où des gains significatifs sont possibles.
+
+Pratiques ou technologies nouvelles pouvant transformer le fonctionnement.
+
+Expérience utilisateur / Satisfaction
+
+Facilité d’utilisation, adoption par les équipes ou clients.
+
+Points de friction ou surprises positives.
+
+Coût / Efficience économique
+
+ROI, dépenses imprévues, optimisation budgétaire.
+
+Surprises positives ou négatives sur la valeur générée.
