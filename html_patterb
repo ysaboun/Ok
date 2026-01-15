@@ -1,0 +1,201 @@
+Parfait, on va faire un **diagramme “fromage” circulaire** (un *pie chart* interactif) en **HTML/CSS/JS pur**, sans librairie externe.
+Objectif : **cliquer sur une part → afficher le contenu associé**. Simple, lisible, Confluence-friendly (via macro HTML si autorisée, ou page statique).
+
+Je te donne un **bloc autonome** que tu peux coller tel quel.
+
+---
+
+### 💡 Principe
+
+* Un cercle découpé en 6 parts égales
+* Chaque part = une *famille de patterns*
+* Au clic :
+
+  * la part est mise en évidence
+  * le contenu descriptif s’affiche à droite
+
+---
+
+## ✅ HTML interactif – Diagramme circulaire des patterns Data
+
+```html
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<title>Patterns Data Engineering</title>
+
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    gap: 40px;
+    padding: 30px;
+  }
+
+  .chart {
+    position: relative;
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    overflow: hidden;
+  }
+
+  .slice {
+    position: absolute;
+    width: 50%;
+    height: 50%;
+    transform-origin: 100% 100%;
+    cursor: pointer;
+    opacity: 0.85;
+  }
+
+  .slice:hover,
+  .slice.active {
+    opacity: 1;
+    outline: 3px solid #000;
+  }
+
+  .slice span {
+    position: absolute;
+    font-size: 12px;
+    font-weight: bold;
+    transform: rotate(-45deg);
+    top: 40%;
+    left: 15%;
+    width: 100px;
+  }
+
+  .content {
+    max-width: 400px;
+  }
+
+  .content h2 {
+    margin-top: 0;
+  }
+</style>
+</head>
+
+<body>
+
+<div class="chart">
+  <div class="slice" style="background:#f94144; transform:rotate(0deg) skewY(-30deg);" data-key="architecture">
+    <span>Architecture Data</span>
+  </div>
+  <div class="slice" style="background:#f3722c; transform:rotate(60deg) skewY(-30deg);" data-key="ingestion">
+    <span>Ingestion</span>
+  </div>
+  <div class="slice" style="background:#f9c74f; transform:rotate(120deg) skewY(-30deg);" data-key="transformation">
+    <span>Transformation</span>
+  </div>
+  <div class="slice" style="background:#90be6d; transform:rotate(180deg) skewY(-30deg);" data-key="stockage">
+    <span>Stockage</span>
+  </div>
+  <div class="slice" style="background:#43aa8b; transform:rotate(240deg) skewY(-30deg);" data-key="qualite">
+    <span>Qualité & Fiabilité</span>
+  </div>
+  <div class="slice" style="background:#577590; transform:rotate(300deg) skewY(-30deg);" data-key="orchestration">
+    <span>Orchestration</span>
+  </div>
+</div>
+
+<div class="content" id="content">
+  <h2>Patterns Data Engineering</h2>
+  <p>Clique sur un segment du cercle pour afficher les patterns associés.</p>
+</div>
+
+<script>
+  const contents = {
+    architecture: `
+      <h2>Architecture Data</h2>
+      <ul>
+        <li>Lambda / Kappa Architecture</li>
+        <li>Data Mesh</li>
+        <li>Lakehouse</li>
+        <li>Domain-oriented data</li>
+      </ul>
+    `,
+    ingestion: `
+      <h2>Ingestion</h2>
+      <ul>
+        <li>CDC (Change Data Capture)</li>
+        <li>Batch ingestion</li>
+        <li>Streaming ingestion</li>
+        <li>API-based ingestion</li>
+      </ul>
+    `,
+    transformation: `
+      <h2>Transformation</h2>
+      <ul>
+        <li>ETL / ELT</li>
+        <li>Schema evolution</li>
+        <li>Data enrichment</li>
+        <li>Idempotent processing</li>
+      </ul>
+    `,
+    stockage: `
+      <h2>Stockage</h2>
+      <ul>
+        <li>Data Lake</li>
+        <li>Data Warehouse</li>
+        <li>Hot / Cold storage</li>
+        <li>Partitioning</li>
+      </ul>
+    `,
+    qualite: `
+      <h2>Qualité & Fiabilité</h2>
+      <ul>
+        <li>Data validation rules</li>
+        <li>Exactly-once / Effectively-once</li>
+        <li>Reprocessing</li>
+        <li>Observabilité data</li>
+      </ul>
+    `,
+    orchestration: `
+      <h2>Orchestration</h2>
+      <ul>
+        <li>Workflow orchestration</li>
+        <li>Scheduling</li>
+        <li>Dependency management</li>
+        <li>Retry & compensation</li>
+      </ul>
+    `
+  };
+
+  document.querySelectorAll('.slice').forEach(slice => {
+    slice.addEventListener('click', () => {
+      document.querySelectorAll('.slice').forEach(s => s.classList.remove('active'));
+      slice.classList.add('active');
+      document.getElementById('content').innerHTML = contents[slice.dataset.key];
+    });
+  });
+</script>
+
+</body>
+</html>
+```
+
+---
+
+## 🧠 Pourquoi ce format marche bien pour Confluence
+
+* **Vision systémique immédiate** (le cercle)
+* Lecture **non linéaire**
+* Parfait pour expliquer la Data à des non-experts
+* Chaque segment peut pointer vers :
+
+  * une sous-page
+  * un schéma
+  * une RFC
+
+---
+
+## Évolutions naturelles possibles
+
+* Ajouter un **niveau de maturité** par couleur
+* Cliquer → ouvrir une **page Confluence dédiée**
+* Transformer le cercle en **radar d’architecture**
+* Ajouter un mode “pattern interdit / recommandé”
+
+Ce genre de visuel, bien utilisé, devient une **boussole d’équipe** plutôt qu’un simple dessin.
+Quand tu veux, on peut l’adapter exactement à ton **Data Mesh / Kafka / CDC / CQRS** réel.
