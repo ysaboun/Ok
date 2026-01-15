@@ -1,0 +1,63 @@
+Oui — *ADR* mérite un texte clair, posé, presque pédagogique. Pas du marketing, pas du dogme. Voilà un **paragraphe structurant**, suivi d’un **schéma explicatif** lisible.
+
+---
+
+### Principe et objectif des ADR (Architecture Decision Records)
+
+Un **ADR (Architecture Decision Record)** est un document court et versionné qui capture **une décision d’architecture significative**, le **contexte** dans lequel elle a été prise, les **options envisagées**, et les **conséquences assumées**.
+Son objectif n’est pas de décrire l’architecture finale, mais de **préserver la mémoire des choix** : pourquoi cette solution a été retenue *à ce moment précis*, avec ces contraintes-là, et pas une autre. Dans un système vivant, l’architecture évolue, les équipes changent, les évidences d’hier deviennent les incompréhensions de demain. L’ADR agit comme un point fixe dans le temps : il évite les débats circulaires, sécurise les évolutions futures et transforme l’architecture d’une suite d’opinions implicites en un ensemble de décisions explicites, traçables et discutables.
+
+Un ADR n’est ni un long document de design, ni une spécification exhaustive. C’est un **artefact de gouvernance légère**, proche du code, stocké dans le dépôt, relu comme un test ou une PR, et accepté comme une hypothèse raisonnable plutôt qu’une vérité éternelle.
+
+---
+
+### Schéma explicatif – logique d’un ADR
+
+```
+┌─────────────────────────────┐
+│        Contexte             │
+│ (problème, contraintes,     │
+│  état existant, forces)     │
+└──────────────┬──────────────┘
+               │
+               ▼
+┌─────────────────────────────┐
+│      Options considérées    │
+│  - Option A                 │
+│  - Option B                 │
+│  - Option C                 │
+└──────────────┬──────────────┘
+               │
+               ▼
+┌─────────────────────────────┐
+│      Décision retenue       │
+│  (choix explicite et daté)  │
+└──────────────┬──────────────┘
+               │
+               ▼
+┌─────────────────────────────┐
+│      Conséquences           │
+│  + Bénéfices attendus       │
+│  - Coûts, limites, risques  │
+└─────────────────────────────┘
+```
+
+---
+
+### Lecture essentielle à retenir
+
+* L’ADR **n’empêche pas le changement** : il l’encadre.
+* Une décision peut être **révisée** par un nouvel ADR, jamais effacée.
+* Sans ADR, l’architecture repose sur la mémoire orale.
+* Avec des ADR, elle repose sur des **choix assumés**.
+
+On pourrait résumer ainsi :
+
+> *Les diagrammes montrent ce qui existe.
+> Les ADR expliquent pourquoi cela existe.*
+
+Si tu veux, je peux te proposer :
+
+* un **template ADR minimaliste** prêt à l’emploi
+* un **exemple réel** (Saga, Outbox, Hexagonale, IAM)
+* ou une **méthode pour intégrer les ADR dans une gouvernance d’architecture existante**
