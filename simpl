@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Patterns Data Engineering</title>
+
+<style>
+  body {
+    font-family: sans-serif;
+    display: flex;
+    gap: 30px;
+    padding: 20px;
+  }
+
+  .circle {
+    width: 260px;
+    height: 260px;
+    border-radius: 50%;
+    border: 2px solid #000;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .slice {
+    position: absolute;
+    width: 50%;
+    height: 50%;
+    transform-origin: 100% 100%;
+    border: 1px solid #000;
+    background: #eee;
+    cursor: pointer;
+  }
+
+  .slice.active {
+    background: #ccc;
+  }
+
+  .slice span {
+    position: absolute;
+    font-size: 11px;
+    font-weight: bold;
+    transform: rotate(-45deg);
+    top: 40%;
+    left: 10%;
+    width: 100px;
+    text-align: center;
+  }
+
+  .content {
+    max-width: 420px;
+  }
+
+  .content h2 {
+    margin-top: 0;
+  }
+</style>
+</head>
+
+<body>
+
+<div class="circle">
+  <div class="slice" style="transform:rotate(0deg) skewY(-30deg);" data-key="architecture">
+    <span>Architecture Data</span>
+  </div>
+  <div class="slice" style="transform:rotate(60deg) skewY(-30deg);" data-key="ingestion">
+    <span>Ingestion</span>
+  </div>
+  <div class="slice" style="transform:rotate(120deg) skewY(-30deg);" data-key="transformation">
+    <span>Transformation</span>
+  </div>
+  <div class="slice" style="transform:rotate(180deg) skewY(-30deg);" data-key="stockage">
+    <span>Stockage</span>
+  </div>
+  <div class="slice" style="transform:rotate(240deg) skewY(-30deg);" data-key="qualite">
+    <span>Qualité & Fiabilité</span>
+  </div>
+  <div class="slice" style="transform:rotate(300deg) skewY(-30deg);" data-key="orchestration">
+    <span>Orchestration</span>
+  </div>
+</div>
+
+<div class="content" id="content">
+  <h2>Patterns Data Engineering</h2>
+  <p>Sélectionne une section du cercle pour afficher les patterns associés.</p>
+</div>
+
+<script>
+  const data = {
+    architecture: `
+      <h2>Architecture Data</h2>
+      <ul>
+        <li>Data Mesh</li>
+        <li>Lakehouse</li>
+        <li>Domain-driven data</li>
+      </ul>
+    `,
+    ingestion: `
+      <h2>Ingestion</h2>
+      <ul>
+        <li>CDC</li>
+        <li>Streaming</li>
+        <li>Batch</li>
+      </ul>
+    `,
+    transformation: `
+      <h2>Transformation</h2>
+      <ul>
+        <li>ETL / ELT</li>
+        <li>Normalisation</li>
+        <li>Idempotence</li>
+      </ul>
+    `,
+    stockage: `
+      <h2>Stockage</h2>
+      <ul>
+        <li>Data Lake</li>
+        <li>Warehouse</li>
+        <li>Partitionnement</li>
+      </ul>
+    `,
+    qualite: `
+      <h2>Qualité & Fiabilité</h2>
+      <ul>
+        <li>Validation des données</li>
+        <li>Reprocessing</li>
+        <li>Observabilité</li>
+      </ul>
+    `,
+    orchestration: `
+      <h2>Orchestration</h2>
+      <ul>
+        <li>Scheduling</li>
+        <li>Dépendances</li>
+        <li>Retry</li>
+      </ul>
+    `
+  };
+
+  document.querySelectorAll('.slice').forEach(slice => {
+    slice.addEventListener('click', () => {
+      document.querySelectorAll('.slice').forEach(s => s.classList.remove('active'));
+      slice.classList.add('active');
+      document.getElementById('content').innerHTML = data[slice.dataset.key];
+    });
+  });
+</script>
+
+</body>
+</html>
