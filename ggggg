@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Patterns Data Engineering</title>
+
+<style>
+  body {
+    font-family: sans-serif;
+    display: flex;
+    gap: 32px;
+    padding: 20px;
+  }
+
+  .circle {
+    width: 260px;
+    height: 260px;
+    border-radius: 50%;
+    border: 2px solid #000;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .slice {
+    position: absolute;
+    width: 50%;
+    height: 50%;
+    transform-origin: 100% 100%;
+    background: #fff;
+    border: 1px solid #000;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+
+  .slice:hover {
+    background: #e6d9ff;
+  }
+
+  .slice.active {
+    background: #c4a7ff;
+  }
+
+  .label {
+    position: absolute;
+    font-size: 11px;
+    font-weight: bold;
+    text-align: center;
+    width: 120px;
+    top: 38%;
+    left: -10%;
+    transform: rotate(-30deg);
+    pointer-events: none;
+  }
+
+  .content {
+    max-width: 420px;
+  }
+
+  .content h2 {
+    margin-top: 0;
+  }
+</style>
+</head>
+
+<body>
+
+<div class="circle">
+  <div class="slice" style="transform:rotate(0deg) skewY(-30deg);" data-key="architecture">
+    <div class="label">Architecture Data</div>
+  </div>
+  <div class="slice" style="transform:rotate(60deg) skewY(-30deg);" data-key="ingestion">
+    <div class="label">Ingestion</div>
+  </div>
+  <div class="slice" style="transform:rotate(120deg) skewY(-30deg);" data-key="transformation">
+    <div class="label">Transformation</div>
+  </div>
+  <div class="slice" style="transform:rotate(180deg) skewY(-30deg);" data-key="stockage">
+    <div class="label">Stockage</div>
+  </div>
+  <div class="slice" style="transform:rotate(240deg) skewY(-30deg);" data-key="qualite">
+    <div class="label">Qualité & Fiabilité</div>
+  </div>
+  <div class="slice" style="transform:rotate(300deg) skewY(-30deg);" data-key="orchestration">
+    <div class="label">Orchestration</div>
+  </div>
+</div>
+
+<div class="content" id="content">
+  <h2>Patterns Data Engineering</h2>
+  <p>Clique sur une part du cercle pour afficher le contenu associé.</p>
+</div>
+
+<script>
+  const contents = {
+    architecture: `
+      <h2>Architecture Data</h2>
+      <ul>
+        <li>Data Mesh</li>
+        <li>Lakehouse</li>
+        <li>Vision orientée domaine</li>
+      </ul>
+    `,
+    ingestion: `
+      <h2>Ingestion</h2>
+      <ul>
+        <li>CDC</li>
+        <li>Streaming</li>
+        <li>Batch</li>
+      </ul>
+    `,
+    transformation: `
+      <h2>Transformation</h2>
+      <ul>
+        <li>ETL / ELT</li>
+        <li>Normalisation</li>
+        <li>Idempotence</li>
+      </ul>
+    `,
+    stockage: `
+      <h2>Stockage</h2>
+      <ul>
+        <li>Data Lake</li>
+        <li>Warehouse</li>
+        <li>Partitionnement</li>
+      </ul>
+    `,
+    qualite: `
+      <h2>Qualité & Fiabilité</h2>
+      <ul>
+        <li>Validation</li>
+        <li>Reprocessing</li>
+        <li>Observabilité</li>
+      </ul>
+    `,
+    orchestration: `
+      <h2>Orchestration</h2>
+      <ul>
+        <li>Scheduling</li>
+        <li>Dépendances</li>
+        <li>Retry</li>
+      </ul>
+    `
+  };
+
+  document.querySelectorAll('.slice').forEach(slice => {
+    slice.addEventListener('click', () => {
+      document.querySelectorAll('.slice').forEach(s => s.classList.remove('active'));
+      slice.classList.add('active');
+      document.getElementById('content').innerHTML =
+        contents[slice.dataset.key];
+    });
+  });
+</script>
+
+</body>
+</html>
