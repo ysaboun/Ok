@@ -1,0 +1,202 @@
+Parfait, on va améliorer ton exemple **3 étapes** pour :
+
+* Ajouter **un log en temps réel** des actions : clic sur “Valider le captcha” et “Vérifier le token”
+* Log affiché dans un **cadre violet**
+* Police petite et lisible
+* Ligne séparatrice en violet
+
+Voici le code complet mis à jour :
+
+---
+
+```html
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Test hCaptcha - 3 étapes avec log</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f2f5;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      padding-top: 50px;
+    }
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+      width: 450px;
+    }
+    h2 {
+      text-align: center;
+      color: #333;
+    }
+    .step {
+      margin-bottom: 25px;
+    }
+    .separator {
+      height: 1px;
+      background: linear-gradient(to right, violet, #eee, violet);
+      margin: 20px 0;
+      border: none;
+    }
+    button {
+      margin-top: 10px;
+      padding: 10px 20px;
+      border: none;
+      background: #4CAF50;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    button:hover {
+      background: #45a049;
+    }
+    textarea {
+      width: 100%;
+      height: 100px;
+      padding: 10px;
+      font-family: monospace;
+      font-size: 14px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      resize: none;
+    }
+    #verifyResult {
+      margin-top: 10px;
+      font-weight: bold;
+      color: #333;
+    }
+    #logArea {
+      width: 100%;
+      height: 120px;
+      padding: 10px;
+      font-family: monospace;
+      font-size: 12px;
+      border-radius: 6px;
+      border: 1px solid violet;
+      background: #f9f5ff;
+      overflow-y: auto;
+      white-space: pre-line;
+    }
+  </style>
+  <!-- hCaptcha JS -->
+  <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
+</head>
+<body>
+  <div class="container">
+    <h2>Test hCaptcha - 3 étapes avec log</h2>
+
+    <!-- Étape 1 : formulaire hCaptcha -->
+    <div class="step" id="step1">
+      <h3>Étape 1 : Formulaire hCaptcha</h3>
+      <form id="form">
+        <div class="h-captcha" data-sitekey="TON_SITEKEY"></div>
+        <button type="submit">Valider le captcha</button>
+      </form>
+    </div>
+
+    <hr class="separator">
+
+    <!-- Étape 2 : affichage token -->
+    <div class="step" id="step2">
+      <h3>Étape 2 : Token généré</h3>
+      <textarea id="tokenArea" readonly placeholder="Le token hCaptcha s’affichera ici…"></textarea>
+    </div>
+
+    <hr class="separator">
+
+    <!-- Étape 3 : vérification siteverify -->
+    <div class="step" id="step3">
+      <h3>Étape 3 : Vérification token</h3>
+      <button id="verifyBtn">Vérifier le token</button>
+      <div id="verifyResult"></div>
+    </div>
+
+    <hr class="separator">
+
+    <!-- Log des actions -->
+    <div class="step">
+      <h3>Trace log</h3>
+      <div id="logArea">Actions :</div>
+    </div>
+
+  </div>
+
+  <script>
+    const form = document.getElementById('form');
+    const tokenArea = document.getElementById('tokenArea');
+    const verifyBtn = document.getElementById('verifyBtn');
+    const verifyResult = document.getElementById('verifyResult');
+    const logArea = document.getElementById('logArea');
+
+    function log(message) {
+      const time = new Date().toLocaleTimeString();
+      logArea.innerText += `\n[${time}] ${message}`;
+      logArea.scrollTop = logArea.scrollHeight; // scroll automatique
+    }
+
+    // Étape 1 -> Génération du token
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const token = document.querySelector('[name="h-captcha-response"]').value;
+      if(token) {
+        tokenArea.value = token;
+        log("Captcha validé, token généré.");
+      } else {
+        tokenArea.value = "Merci de compléter le captcha !";
+        log("Captcha non complété.");
+      }
+    });
+
+    // Étape 3 -> Vérification du token (simulée côté frontend)
+    verifyBtn.addEventListener('click', async () => {
+      const token = tokenArea.value.trim();
+      if(!token || token.includes("Merci de compléter")) {
+        verifyResult.style.color = "red";
+        verifyResult.innerText = "Veuillez générer un token valide d'abord !";
+        log("Tentative de vérification sans token valide.");
+        return;
+      }
+
+      // Simulation fetch (côté front)
+      verifyResult.style.color = "green";
+      verifyResult.innerText = "Token prêt pour vérification côté serveur : " + token;
+      log("Vérification du token simulée côté front.");
+    });
+  </script>
+</body>
+</html>
+```
+
+---
+
+### ✅ Ce qui a changé
+
+1. **Log des actions** :
+
+   * Clic sur “Valider le captcha”
+   * Clic sur “Vérifier le token”
+   * Affiché dans un **cadre violet**, petite police, scroll automatique
+
+2. **Style moderne** :
+
+   * Lignes séparatrices avec **dégradé violet**
+   * Police des logs en monospace, petite
+   * Cadre violet autour du log
+
+3. **3 étapes bien visibles** : formulaire → token → vérification
+
+---
+
+Si tu veux, je peux te faire **la version finale où la vérification siteverify est vraiment faite côté navigateur** avec fetch + ton **secret** (en pseudo-backend JS pur), pour tester tout bout à bout sans serveur externe.
+
+Veux‑tu que je fasse ça ?
