@@ -1,0 +1,102 @@
+Parfait ! Voici un exemple **joli, simple et entièrement fonctionnel** pour tester hCaptcha avec **HTML + JS**, prêt à utiliser avec **Live Server dans VSCode**. Pas besoin de Node ou Python.
+
+---
+
+### 1️⃣ Crée un fichier `index.html` :
+
+```html
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Test hCaptcha</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: #f0f2f5;
+    }
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+      text-align: center;
+      width: 350px;
+    }
+    button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      border: none;
+      background: #4CAF50;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    button:hover {
+      background: #45a049;
+    }
+  </style>
+  <!-- hCaptcha JS -->
+  <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
+</head>
+<body>
+  <div class="container">
+    <h2>Formulaire de test hCaptcha</h2>
+
+    <form id="form">
+      <div class="h-captcha" data-sitekey="TON_SITEKEY"></div>
+      <button type="submit">Envoyer</button>
+    </form>
+
+    <div id="result" style="margin-top: 15px; color: #333;"></div>
+  </div>
+
+  <script>
+    document.getElementById('form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      // récupère le token hCaptcha
+      const token = document.querySelector('[name="h-captcha-response"]').value;
+
+      const result = document.getElementById('result');
+      if(token) {
+        result.innerHTML = `<strong>Token généré :</strong> ${token}`;
+      } else {
+        result.innerHTML = `<span style="color:red;">Merci de compléter le captcha !</span>`;
+      }
+    });
+  </script>
+</body>
+</html>
+```
+
+---
+
+### 2️⃣ Instructions pour tester avec **Live Server** dans VSCode
+
+1. Ouvre ton dossier contenant `index.html` dans **VSCode**
+2. Installe l’extension **Live Server** si ce n’est pas déjà fait
+3. Clique droit sur `index.html` → **“Open with Live Server”**
+4. Le navigateur s’ouvre sur une URL type `http://127.0.0.1:5500/index.html`
+5. Vérifie que ta **sitekey hCaptcha** est configurée pour `localhost`
+
+✅ Si tout est correct, le captcha s’affiche et un **token valide** est généré quand tu cliques sur “Envoyer”.
+
+---
+
+### 3️⃣ Notes pratiques
+
+* `TON_SITEKEY` → remplace par ta **clé site hCaptcha**
+* Compatible **checkbox** et **invisible** (pour invisible, ajoute `data-size="invisible"` et appelle `hcaptcha.execute()` côté JS)
+* Pas besoin de serveur backend pour générer le token, mais si tu veux le **vérifier côté serveur**, il faut un call à `https://hcaptcha.com/siteverify` avec ton **secret**
+
+---
+
+Si tu veux, je peux te faire **une version “invisible” avec JS pur**, où le bouton déclenche le captcha sans l’afficher, ça fait très propre pour un formulaire moderne.
+
+Veux‑tu que je fasse cette version ?
