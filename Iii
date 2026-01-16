@@ -1,0 +1,212 @@
+Parfait, on va faire ça proprement et **pédagogiquement juste**, sans mentir à la physique du web 😄
+On va **simuler un backend ROA (Resource-Oriented Architecture)** **uniquement en JavaScript côté navigateur**, comme un **faux service `/siteverify`**, pour comprendre le flux **sans Node, sans Python, sans serveur réel**.
+
+⚠️ Ce qui suit est une **simulation d’architecture**, pas une vraie validation hCaptcha (impossible sans secret côté serveur).
+
+---
+
+## 🎯 Objectif pédagogique
+
+Reproduire mentalement et visuellement ce flux :
+
+```
+[Utilisateur]
+     ↓
+[Formulaire + hCaptcha]
+     ↓
+[token h-captcha]
+     ↓
+POST /captcha-verifications   ← (ROA)
+     ↓
+[Backend simulé JS]
+     ↓
+{ success: true / false }
+```
+
+---
+
+## 🧠 Principe de la simulation
+
+* On crée une **fonction JS qui joue le rôle du backend**
+* Elle reçoit un token
+* Elle applique des règles simples (ex : token présent, longueur minimale)
+* Elle retourne une réponse **comme l’API hCaptcha**
+
+👉 C’est exactement ce que ferait un backend, mais **en local**
+
+---
+
+## 🧩 Exemple complet HTML + JS (Live Server compatible)
+
+Copie-colle tel quel dans un fichier `index.html`.
+
+```html
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>hCaptcha – Simulation Backend ROA</title>
+
+  <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f7f5fb;
+      padding: 30px;
+    }
+
+    .step {
+      border-left: 4px solid #7a4cff;
+      padding: 15px;
+      margin-bottom: 25px;
+      background: #fff;
+      border-radius: 6px;
+    }
+
+    .step h3 {
+      margin-top: 0;
+      color: #4b2ca3;
+    }
+
+    textarea {
+      width: 100%;
+      height: 80px;
+      font-size: 12px;
+    }
+
+    button {
+      padding: 10px 16px;
+      background: #7a4cff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .log {
+      font-size: 11px;
+      border: 1px solid #d4c6ff;
+      padding: 10px;
+      background: #f3eeff;
+      color: #4b2ca3;
+      white-space: pre-line;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ÉTAPE 1 -->
+  <div class="step">
+    <h3>Étape 1 – Validation hCaptcha</h3>
+
+    <form id="captcha-form">
+      <div class="h-captcha" data-sitekey="10000000-ffff-ffff-ffff-000000000001"></div>
+      <br />
+      <button type="submit">Valider le captcha</button>
+    </form>
+  </div>
+
+  <!-- ÉTAPE 2 -->
+  <div class="step">
+    <h3>Étape 2 – Token généré</h3>
+    <textarea id="tokenArea" readonly></textarea>
+  </div>
+
+  <!-- ÉTAPE 3 -->
+  <div class="step">
+    <h3>Étape 3 – Vérification (Backend simulé ROA)</h3>
+    <button id="verifyBtn">POST /captcha-verifications</button>
+    <pre class="log" id="log"></pre>
+  </div>
+
+<script>
+  const form = document.getElementById("captcha-form");
+  const tokenArea = document.getElementById("tokenArea");
+  const log = document.getElementById("log");
+
+  let currentToken = null;
+
+  // Étape 1 : récupération du token
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    currentToken = document.querySelector('[name="h-captcha-response"]').value;
+
+    tokenArea.value = currentToken || "❌ Aucun token généré";
+    log.textContent += "✔ Captcha validé, token reçu\n";
+  });
+
+  // Étape 3 : appel backend simulé
+  document.getElementById("verifyBtn").addEventListener("click", async () => {
+    log.textContent += "➡ POST /captcha-verifications\n";
+
+    const response = await fakeBackendVerify(currentToken);
+    log.textContent += JSON.stringify(response, null, 2) + "\n";
+  });
+
+  // === BACKEND SIMULÉ ROA ===
+  function fakeBackendVerify(token) {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        if (!token) {
+          resolve({
+            success: false,
+            error_codes: ["missing-input-response"]
+          });
+        } else if (token.length < 20) {
+          resolve({
+            success: false,
+            error_codes: ["invalid-input-response"]
+          });
+        } else {
+          resolve({
+            success: true,
+            challenge_ts: new Date().toISOString(),
+            hostname: "localhost"
+          });
+        }
+      }, 600); // latence réseau simulée
+    });
+  }
+</script>
+
+</body>
+</html>
+```
+
+---
+
+## 🧠 Lecture architecturale (important)
+
+* `/captcha-verifications` est une **ressource**
+* Le bouton simule un **POST**
+* `fakeBackendVerify()` représente :
+
+  * un contrôleur
+  * un service
+  * un appel à `siteverify`
+* Le format de réponse **mime exactement hCaptcha**
+
+👉 Tu raisonnes **ROA + sécurité**, même sans serveur.
+
+---
+
+## 🧩 Ce que tu peux documenter dans ton repo / Confluence
+
+* Séparation **client / backend**
+* Principe **never trust the frontend**
+* Rôle du **token comme preuve cryptographique**
+* Pourquoi `siteverify` est **obligatoirement serveur**
+* Comment tester un flux sécurité **sans stack backend**
+
+---
+
+Si tu veux, je peux ensuite te fournir :
+
+* un **schéma ASCII** Front / API / hCaptcha
+* une **version REST vs ROA comparée**
+* une **checklist sécurité captcha côté backend**
+* ou une **version conforme OWASP ASVS**
+
+On continue dans quelle direction 🧠✨
