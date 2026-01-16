@@ -1,0 +1,168 @@
+Parfait ! On va créer **une page unique** avec **3 étapes** :
+
+1. Formulaire hCaptcha
+2. Affichage du token dans un **textarea**
+3. Vérification côté serveur (simulée avec fetch sur siteverify)
+
+Le tout avec un **style simple, moderne**, et une **ligne séparatrice joliment stylée** entre chaque étape.
+
+---
+
+### Code complet `index.html`
+
+```html
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Test hCaptcha - 3 étapes</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f2f5;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      padding-top: 50px;
+    }
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+      width: 400px;
+    }
+    h2 {
+      text-align: center;
+      color: #333;
+    }
+    .step {
+      margin-bottom: 25px;
+    }
+    .separator {
+      height: 1px;
+      background: linear-gradient(to right, #ccc, #eee, #ccc);
+      margin: 20px 0;
+      border: none;
+    }
+    button {
+      margin-top: 10px;
+      padding: 10px 20px;
+      border: none;
+      background: #4CAF50;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    button:hover {
+      background: #45a049;
+    }
+    textarea {
+      width: 100%;
+      height: 100px;
+      padding: 10px;
+      font-family: monospace;
+      font-size: 14px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      resize: none;
+    }
+    #verifyResult {
+      margin-top: 10px;
+      font-weight: bold;
+      color: #333;
+    }
+  </style>
+  <!-- hCaptcha JS -->
+  <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
+</head>
+<body>
+  <div class="container">
+    <h2>Test hCaptcha - 3 étapes</h2>
+
+    <!-- Étape 1 : formulaire hCaptcha -->
+    <div class="step" id="step1">
+      <h3>Étape 1 : Formulaire hCaptcha</h3>
+      <form id="form">
+        <div class="h-captcha" data-sitekey="TON_SITEKEY"></div>
+        <button type="submit">Valider le captcha</button>
+      </form>
+    </div>
+
+    <hr class="separator">
+
+    <!-- Étape 2 : affichage token -->
+    <div class="step" id="step2">
+      <h3>Étape 2 : Token généré</h3>
+      <textarea id="tokenArea" readonly placeholder="Le token hCaptcha s’affichera ici…"></textarea>
+    </div>
+
+    <hr class="separator">
+
+    <!-- Étape 3 : vérification siteverify -->
+    <div class="step" id="step3">
+      <h3>Étape 3 : Vérification token</h3>
+      <button id="verifyBtn">Vérifier le token</button>
+      <div id="verifyResult"></div>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById('form');
+    const tokenArea = document.getElementById('tokenArea');
+    const verifyBtn = document.getElementById('verifyBtn');
+    const verifyResult = document.getElementById('verifyResult');
+
+    // Étape 1 -> Génération du token
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const token = document.querySelector('[name="h-captcha-response"]').value;
+      if(token) {
+        tokenArea.value = token;
+      } else {
+        tokenArea.value = "Merci de compléter le captcha !";
+      }
+    });
+
+    // Étape 3 -> Vérification du token (simulée côté frontend)
+    // Pour une vraie vérification, il faut appeler votre backend qui fera le POST vers https://hcaptcha.com/siteverify
+    verifyBtn.addEventListener('click', async () => {
+      const token = tokenArea.value.trim();
+      if(!token || token.includes("Merci de compléter")) {
+        verifyResult.style.color = "red";
+        verifyResult.innerText = "Veuillez générer un token valide d'abord !";
+        return;
+      }
+
+      // Simulation fetch (ici on ne peut pas faire siteverify directement côté navigateur)
+      // Normalement : POST https://hcaptcha.com/siteverify avec secret côté serveur
+      verifyResult.style.color = "green";
+      verifyResult.innerText = "Token prêt pour vérification côté serveur : " + token;
+    });
+  </script>
+</body>
+</html>
+```
+
+---
+
+### ✅ Points clés
+
+1. **Étape 1** : l’utilisateur complète le captcha → token généré
+2. **Étape 2** : token affiché dans le **textarea**
+3. **Étape 3** : bouton pour “vérifier” → simulation front-end, à remplacer par ton backend
+
+* Ligne séparatrice stylée avec `linear-gradient`
+* Style simple et moderne, lisible
+* Fonctionne avec **Live Server VSCode** → `http://127.0.0.1:5500/index.html`
+* Remplace `TON_SITEKEY` par ta clé hCaptcha autorisée pour `localhost`
+
+---
+
+Si tu veux, je peux te faire **une version complète “vraie vérification siteverify”** où tu peux **toucher le backend en JS pur avec fetch** et recevoir la validation réelle, prête à copier-coller.
+
+Veux‑tu que je fasse ça ?
