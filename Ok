@@ -1,0 +1,12 @@
+hCaptcha activé uniquement lorsque nécessaire
+
+Pas de déclenchement systématique
+
+Pas de stockage des tokens hCaptcha
+
+Pas de corrélation inter-sessions
+
+Pas d’exploitation applicative des données hCaptcha
+
+Message clé
+👉 Ce qui est collecté sert uniquement à bloquer les bots
