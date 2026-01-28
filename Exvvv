@@ -1,0 +1,42 @@
+{
+  "manifest_version": 3,
+  "name": "Eco Data Extension",
+  "description": "Optimisation et contrôle de la consommation de données",
+  "version": "1.0.0",
+
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Eco Data"
+  },
+
+  "permissions": [
+    "storage",
+    "tabs",
+    "declarativeNetRequest"
+  ],
+
+  "host_permissions": [
+    "https://example.com/*"
+  ],
+
+  "background": {
+    "service_worker": "background.js"
+  },
+
+  "content_scripts": [
+    {
+      "matches": ["https://example.com/*"],
+      "js": ["content.js"]
+    }
+  ],
+
+  "declarative_net_request": {
+    "rule_resources": [
+      {
+        "id": "ruleset_1",
+        "enabled": true,
+        "path": "rules.json"
+      }
+    ]
+  }
+}
