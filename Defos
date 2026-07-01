@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>JS Deobfuscator</title>
+</head>
+<body>
+
+<h3>Dé-obfuscateur JS simple</h3>
+
+<textarea id="input" rows="10" cols="80" placeholder="Colle ton JS ici"></textarea>
+<br><br>
+
+<button onclick="deobfuscate()">Dé-obfusquer</button>
+
+<h3>Résultat :</h3>
+<pre id="output"></pre>
+
+<script>
+function deobfuscate() {
+  let code = document.getElementById("input").value;
+
+  // 1. Décodage \xHH
+  code = code.replace(/\\x([0-9A-Fa-f]{2})/g, function(_, hex) {
+    return String.fromCharCode(parseInt(hex, 16));
+  });
+
+  // 2. Décodage \uHHHH
+  code = code.replace(/\\u([0-9A-Fa-f]{4})/g, function(_, hex) {
+    return String.fromCharCode(parseInt(hex, 16));
+  });
+
+  // 3. Formatage basique (indentation simple)
+  let indent = 0;
+  let formatted = "";
+
+  for (let i = 0; i < code.length; i++) {
+    let char = code[i];
+
+    if (char === "{") {
+      formatted += " {\n";
+      indent++;
+      formatted += "  ".repeat(indent);
+    }
+    else if (char === "}") {
+      formatted += "\n";
+      indent = Math.max(0, indent - 1);
+      formatted += "  ".repeat(indent) + "}\n";
+    }
+    else if (char === ";") {
+      formatted += ";\n" + "  ".repeat(indent);
+    }
+    else {
+      formatted += char;
+    }
+  }
+
+  document.getElementById("output").textContent = formatted;
+}
+</script>
+
+</body>
+</html>
