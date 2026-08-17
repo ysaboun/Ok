@@ -1,0 +1,27 @@
+Oui, j’ai vérifié la documentation Adobe actuelle.
+
+### WebSocket ↔ Marketo
+
+Adobe mentionne bien les **WebSockets**, mais **ce n’est pas une API WebSocket exposée par Marketo pour échanger les données métier** (leads, consentements, campagnes, etc.).
+
+La documentation Adobe indique simplement que les WebSockets font partie des ressources nécessaires au fonctionnement de **l’interface Marketo Engage** et qu’il faut autoriser certains domaines si le réseau utilise une allowlist. ([Experience League][1])
+
+[Documentation Adobe — Configure Protocols for Marketo Engage](https://experienceleague.adobe.com/en/docs/marketo/using/getting-started/initial-setup/configure-protocols-for-marketo?utm_source=chatgpt.com)
+
+### Pour une intégration avec ton application
+
+Pour communiquer avec Marketo, Adobe documente plutôt :
+
+* **REST API** → lire/modifier les données Marketo
+* **Webhooks HTTP GET/POST** → Marketo appelle ton service externe
+* **JavaScript API / Munchkin** → tracking et événements côté web
+* **WebSocket** → pas documenté comme mécanisme d'intégration métier Marketo
+
+[Documentation officielle Marketo Developer](https://experienceleague.adobe.com/fr/docs/marketo-developer/marketo/home?utm_source=chatgpt.com)
+
+[Documentation Adobe — Webhooks Marketo](https://experienceleague.adobe.com/fr/docs/marketo-developer/marketo/webhooks/webhooks?utm_source=chatgpt.com)
+
+Donc si quelqu'un dans ton projet parle de **« WebSocket avec Marketo »**, il faudrait vérifier ce qu'il entend exactement : **WebSocket utilisé par l'interface Marketo** ou **WebSocket pour transmettre des événements/consentements entre votre SI et Marketo**. Dans le deuxième cas, je ne trouve pas d'API WebSocket officielle Marketo pour cela. ([Experience League][2])
+
+[1]: https://experienceleague.adobe.com/en/docs/marketo/using/getting-started/initial-setup/configure-protocols-for-marketo?utm_source=chatgpt.com "Configure Protocols for Marketo Engage | Adobe Marketo Engage"
+[2]: https://experienceleague.adobe.com/fr/docs/marketo-developer/marketo/webhooks/webhooks?utm_source=chatgpt.com "Webhooks | Adobe Marketo Engage"
