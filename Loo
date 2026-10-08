@@ -1,0 +1,6 @@
+J’ai fait la review du Swagger. Voici les principaux points à corriger :
+
+* Ajout de `securitySchemes` avec `bearerAuth` et de `security` pour la gestion de l’authentification.
+* Respect de l’ordre : `parameters` avant `responses`.
+* Ajout de `required: true` pour le query parameter `env`.
+* Ajout de `ErrorModel` pour documenter les cas d’erreur `400` et `500`.
