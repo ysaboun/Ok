@@ -1,0 +1,63 @@
+grant_type=client_credentials
+client_assertion_type=urn:ietf:params:oauth:client-assertion-type:jwt-bearer
+client_assertion=<JWT signé du backend partenaire>
+
+
+urn:ietf:params:oauth:grant-type:jwt-bearer : RFC 7523, section 2.1.
+
+urn:ietf:params:oauth:client-assertion-type:jwt-bearer : RFC 7523, section 2
+
+.2.
+
+
+grant_type=urn:ietf:params:oauth:grant-type:jwt-bearer
+assertion=<JWT_D_AUTORISATION>
+
+client_assertion_type=urn:ietf:params:oauth:client-assertion-type:jwt-bearer
+client_assertion=<JWT_AUTHENTIFICATION_CLIENT>
+
+client_id=my-client
+
+
+
+grant_type=client_credentials
+client_assertion_type=
+  urn:ietf:params:oauth:client-assertion-type:jwt-bearer
+client_assertion=<JWT signé>
+
+
+
+Le backend peut envoyer les deux mécanismes au endpoint /token :
+
+POST /token
+Content-Type: application/x-www-form-urlencoded
+grant_type=urn:ietf:params:oauth:grant-type:jwt-bearer
+assertion=<JWT_EMIS_PAR_L_IDP_PARTENAIRE>
+
+client_id=partenaire-123
+client_assertion_type=urn:ietf:params:oauth:client-assertion-type:jwt-bearer
+client_assertion=<JWT_SIGNE_PAR_LE_BACKEND_PARTENAIRE>
+
+Le serveur vérifie l’assertion de grant et l’authentification du client selon la RFC 7523.
+
+
+
+
+
+
+
+
+
+___^
+Le backend peut envoyer les deux mécanismes au endpoint /token :
+
+POST /token
+Content-Type: application/x-www-form-urlencoded
+grant_type=urn:ietf:params:oauth:grant-type:jwt-bearer
+assertion=<JWT_EMIS_PAR_L_IDP_PARTENAIRE>
+
+client_id=partenaire-123
+client_assertion_type=urn:ietf:params:oauth:client-assertion-type:jwt-bearer
+client_assertion=<JWT_SIGNE_PAR_LE_BACKEND_PARTENAIRE>
+
+Le serveur vérifie l’assertion de grant et l’authentification du client selon la RFC 7523.
